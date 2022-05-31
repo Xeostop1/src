@@ -23,7 +23,7 @@ public class dataReader {
 		String input= sc.next();
 		
 		File doc =new File("src/data/text.txt");
-		//파일생성 깃허브 확인중 
+		//파일생성 깃허브 확인중 10:34
 		
 		try {
 			FileOutputStream fous=new FileOutputStream(doc);
