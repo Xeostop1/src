@@ -1,11 +1,13 @@
 package dataReader;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ex_03ver_1 {
@@ -25,6 +27,9 @@ public class ex_03ver_1 {
 		Cancle1 cancle1=new Cancle1();
 		//영화 목록불러오기
 		FileRead1 f1=new FileRead1();
+		//영화 목록 저장
+		//FileWriter1 fw1=new FileWriter1();
+		Movie1 movie1=new Movie1("명량","사극");
 		
 		
 		
@@ -68,6 +73,15 @@ public class ex_03ver_1 {
 						break;
 					case 4:
 						System.out.println("관리자메뉴 입니다");
+						System.out.println("1.추가 2.조회 3.취소");
+						num1=sc.nextInt();
+						
+						 if(num1==1) {
+							 movie1.addMovie();
+						 }
+						 else if(num1==2) {movie1.toFileString();}
+						 else if(num1==3) {System.out.println("취소입니다");}
+						 else System.out.println("다시입력해 주세요");
 						break;
 					case 5:
 						while(num!=5);
@@ -82,7 +96,8 @@ class Reserve1{
 	static String[] S= new String[10];
 	static String[] A= new String[10];
 	static String[] B= new String[10];
-
+	File file1 =new File("src/text/movie.txt");
+	
 	Scanner sc=new Scanner(System.in);
 	//클래스에서 스캐너 한번만 사용!
 	
@@ -196,25 +211,67 @@ class FileRead1 extends Reserve1{
 }//met
 }//c
 
-class FileWriter1 extends Reserve1{
-	File file =new File("src/text/movieReservation.txt");
-	
-	
-	void writer() {
-		try {
-			FileWriter fw = new FileWriter("src/text/movieReservation.txt", true);
-			
-		}catch(IOException  e){
-			System.out.println(e+"오류입니다");
-			
-		}
-	
-	}
-	   
+class Movie1 extends Reserve1{
+ String title;
+ String genre;
+ static final File file =new File("src/data/movies.text");
+ 
+ 
+ Movie1(){}
+ 
+ //무비를 만드는 생성자
+ Movie1(String _title, String _genre){
+	 title=_title;
+	 genre=_genre;
+ }
+ 
+ public void save(){
+	 
+	 try {
+		 FileWriter fw=new FileWriter(file, true);
+		 fw.write(this.toFileString()+"\n");
+		 System.out.println("파일이 저장되었습니다.");
+		 fw.close();
+	 }
+	 catch(IOException e){
+		 System.out.println("파일 미저장"+e);
+	 }
+	 
+	 
+ }
+ 
+ String toFileString() {//객체정보를 문자열로 변환
+	 return String.format("%s,%s", title, genre);
+ }
+ 
+ public static ArrayList<Movie1> findAll() throws IOException{
+	 ArrayList<Movie1> m1=new ArrayList<Movie1>();
+	 BufferedReader br=new BufferedReader(new FileReader(file));
+	 String line =null;
+	 
+	 while((line= br.readLine()) !=null) {//파일을 한 행씩 읽어 반복
+		 String[] temp=line.split(","); // 쉽표를 기준으로 문자열을 나눔
+		 Movie1 m=new Movie1(
+				 temp[0], //스트링 템프 0인덱스에 제목 저장
+				 temp[1] //스트링 템프 1인덱스에 장르 저장
+				 );
+		 m1.add(m); //영화 객체를 어레이 리스트에 추가
+	 }
+	 br.close();
+	 return m1;	 
+ }
+ 
+ void addMovie() {
+	 System.out.println("제목 입력");
+	 String title_input=sc.next();
+	 System.out.println("장르 입력");
+	 String genre_input=sc.next();
+	 Movie1 m1=new Movie1(title, genre);
+	 m1.save();
+	 System.out.println("등록완료");
+ }
+ 
 }//C
-
-
-
 
 
 //좌석 조회를 위한 클래스
